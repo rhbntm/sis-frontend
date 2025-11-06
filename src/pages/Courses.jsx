@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { getCourses, addCourse, deleteCourse } from "../services/api";
+import { getCourses, addCourse, deleteCourse, getDepartments } from "../services/api";
 
 export default function Courses() {
   const [courses, setCourses] = useState([]);
+  const [departments, setDepartments] = useState([]);
   const [form, setForm] = useState({
     department_id: "",
     course_code: "",
@@ -17,6 +18,15 @@ export default function Courses() {
       setCourses(data);
     } catch (err) {
       console.error("Failed to fetch courses", err);
+    }
+  };
+
+  const loadDepartments = async () => {
+    try {
+      const data = await getDepartments();
+      setDepartments(data);
+    } catch (err) {
+      console.error("Failed to fetch departments", err);
     }
   };
 
@@ -48,6 +58,7 @@ export default function Courses() {
 
   useEffect(() => {
     loadCourses();
+    loadDepartments();
   }, []);
 
   return (
@@ -57,14 +68,21 @@ export default function Courses() {
       {/* Add Course Form */}
       <form onSubmit={handleSubmit} className="space-y-3 bg-white p-4 rounded-xl shadow">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <input
-            type="text"
-            placeholder="Department ID"
+          {/* Department Dropdown */}
+          <select
             value={form.department_id}
             onChange={(e) => setForm({ ...form, department_id: e.target.value })}
             className="border rounded p-2 w-full"
             required
-          />
+          >
+            <option value="">Select Department</option>
+            {departments.map((dept) => (
+              <option key={dept.department_id} value={dept.department_id}>
+                {dept.name}
+              </option>
+            ))}
+          </select>
+
           <input
             type="text"
             placeholder="Course Code"
@@ -105,7 +123,7 @@ export default function Courses() {
           <thead>
             <tr className="bg-gray-100">
               <th className="border px-4 py-2">ID</th>
-              <th className="border px-4 py-2">Dept ID</th>
+              <th className="border px-4 py-2">Department</th>
               <th className="border px-4 py-2">Course Code</th>
               <th className="border px-4 py-2">Title</th>
               <th className="border px-4 py-2">Credits</th>
@@ -123,7 +141,12 @@ export default function Courses() {
               courses.map((course) => (
                 <tr key={course.course_id}>
                   <td className="border px-4 py-2">{course.course_id}</td>
-                  <td className="border px-4 py-2">{course.department_id}</td>
+                  <td className="border px-4 py-2">
+                    {
+                      departments.find((d) => d.department_id === course.department_id)?.name ||
+                      "N/A"
+                    }
+                  </td>
                   <td className="border px-4 py-2">{course.course_code}</td>
                   <td className="border px-4 py-2">{course.title}</td>
                   <td className="border px-4 py-2">{course.credit_hours}</td>
