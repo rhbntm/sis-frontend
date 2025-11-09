@@ -50,3 +50,24 @@ export const getSections = async () => {
   const res = await axios.get(`${API_BASE}/sections`);
   return res.data;
 };
+
+// 🧩 Grades API
+export const getGrades = async () => {
+  const res = await axios.get(`${API_BASE}/grades`);
+  return res.data;
+};
+
+export const addGrade = async (data) => {
+  const res = await axios.post(`${API_BASE}/grades`, data);
+  return res.data;
+};
+
+export const updateGrade = async (id, data) => {
+  const res = await axios.put(`${API_BASE}/grades/${id}`, data);
+  return res.data;
+};
+
+export const deleteGrade = async (id) => {
+  const res = await axios.delete(`${API_BASE}/grades/${id}`);
+  return res.data;
+};
