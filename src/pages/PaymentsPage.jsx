@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { getStudents, getCourses } from "../services/api";
+import {
+  getStudents,
+  getCourses,
+  getPayments,
+  addPayment,
+  deletePayment,
+  getBalanceByStudent,
+  generateQR, // ✅ add this import
+} from "../services/api";
+
+
 
 const API_BASE = "http://localhost/student_information_system/public/api";
 
@@ -10,6 +20,12 @@ const PaymentsPage = () => {
   const [courses, setCourses] = useState([]);
   const [balance, setBalance] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [qrLoading, setQrLoading] = useState(false);
+
+  // 🆕 QR Modal States
+  const [qrModalOpen, setQrModalOpen] = useState(false);
+  const [qrImage, setQrImage] = useState(null);
+  const [qrPayment, setQrPayment] = useState(null);
 
   const [formData, setFormData] = useState({
     student_id: "",
@@ -20,7 +36,7 @@ const PaymentsPage = () => {
     reference_number: "",
   });
 
-  // ✅ Fetch students and courses
+  // ✅ Fetch dropdown data (students + courses)
   const fetchDropdownData = async () => {
     try {
       const [studentsData, coursesData] = await Promise.all([
@@ -44,7 +60,7 @@ const PaymentsPage = () => {
     }
   };
 
-  // ✅ Fetch a student’s balance automatically
+  // ✅ Fetch student balance
   const fetchBalance = async (studentId) => {
     if (!studentId) {
       setBalance(null);
@@ -64,25 +80,24 @@ const PaymentsPage = () => {
     fetchPayments();
   }, []);
 
-  // ✅ Handle form inputs
+  // ✅ Handle form changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    // Auto-load balance when student changes
     if (name === "student_id") {
       fetchBalance(value);
     }
   };
 
-  // ✅ Add payment
+  // ✅ Add new payment
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       await axios.post(`${API_BASE}/payments`, formData);
       fetchPayments();
-      fetchBalance(formData.student_id); // refresh updated balance
+      fetchBalance(formData.student_id);
       setFormData({
         student_id: "",
         course_id: "",
@@ -111,6 +126,25 @@ const PaymentsPage = () => {
     }
   };
 
+  // 🆕 Proper QR Fetcher (fixed)
+    const handleViewQR = async (payment) => {
+    try {
+      setQrLoading(true);
+      setQrImage(null);
+      setQrPayment(payment);
+      setQrModalOpen(true);
+
+      const qrText = `Receipt: ${payment.reference_number}\nStudent ID: ${payment.student_id}\nAmount: ₱${payment.amount}\nDate: ${payment.payment_date}\nMethod: ${payment.payment_method}`;
+      const qrUrl = await generateQR(qrText);
+      setQrImage(qrUrl);
+    } catch (err) {
+      console.error("QR generation failed:", err);
+      setQrImage(null);
+    } finally {
+      setQrLoading(false);
+    }
+  };
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-blue-700">
@@ -120,7 +154,6 @@ const PaymentsPage = () => {
       {/* Payment Form */}
       <div className="bg-white shadow-md rounded-lg p-6 mb-8">
         <h2 className="text-lg font-semibold mb-4">Add New Payment</h2>
-
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
           {/* Student Dropdown */}
           <select
@@ -154,15 +187,11 @@ const PaymentsPage = () => {
             ))}
           </select>
 
-          {/* Display linked student balance */}
+          {/* Balance info */}
           {balance && (
             <div className="col-span-2 bg-blue-50 border border-blue-100 p-3 rounded text-sm">
-              <p>
-                <strong>Total Due:</strong> ₱{balance.total_due}
-              </p>
-              <p>
-                <strong>Total Paid:</strong> ₱{balance.total_paid}
-              </p>
+              <p><strong>Total Due:</strong> ₱{balance.total_due}</p>
+              <p><strong>Total Paid:</strong> ₱{balance.total_paid}</p>
               <p>
                 <strong>Outstanding:</strong>{" "}
                 <span
@@ -178,7 +207,7 @@ const PaymentsPage = () => {
             </div>
           )}
 
-          {/* Payment details */}
+          {/* Payment Inputs */}
           <input
             type="number"
             name="amount"
@@ -254,7 +283,13 @@ const PaymentsPage = () => {
                   <td className="p-2 border">{p.payment_date}</td>
                   <td className="p-2 border">{p.payment_method}</td>
                   <td className="p-2 border">{p.reference_number}</td>
-                  <td className="p-2 border text-center">
+                  <td className="p-2 border text-center space-x-2">
+                    <button
+                      onClick={() => handleViewQR(p)}
+                      className="text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      View QR
+                    </button>
                     <button
                       onClick={() => handleDelete(p.payment_id)}
                       className="text-red-500 hover:text-red-700 font-medium"
@@ -268,6 +303,38 @@ const PaymentsPage = () => {
           </table>
         )}
       </div>
+
+      {/* 🆕 QR Modal */}
+      {qrModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm text-center relative">
+            <button
+              onClick={() => setQrModalOpen(false)}
+              className="absolute top-2 right-3 text-gray-500 hover:text-gray-700 text-lg"
+            >
+              ×
+            </button>
+            <h2 className="text-lg font-semibold mb-3">QR Receipt</h2>
+
+            {qrLoading ? (
+              <p>Generating QR...</p>
+            ) : qrImage ? (
+              <>
+                <img
+                  src={qrImage}
+                  alt="QR Code"
+                  className="mx-auto mb-3 border rounded p-2"
+                />
+                <p className="text-sm text-gray-600 whitespace-pre-line">
+                  {`Ref: ${qrPayment.reference_number}\nAmount: ₱${qrPayment.amount}\nDate: ${qrPayment.payment_date}`}
+                </p>
+              </>
+            ) : (
+              <p className="text-red-500 text-sm">Failed to load QR code.</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
