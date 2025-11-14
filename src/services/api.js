@@ -73,6 +73,11 @@ export const deleteGrade = async (id) => {
   return res.data;
 };
 
+export const getGPA = async (studentId) => {
+  const res = await axios.get(`${API_BASE}/gpa/${studentId}`);
+  return res.data;
+};
+
 // ------------------ Payments ------------------
 export const getPayments = async () => {
   const res = await axios.get(`${API_BASE}/payments`);
