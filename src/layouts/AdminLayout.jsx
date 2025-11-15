@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import Sidebar from "./Sidebar";
+import AdminSidebar from "../components/navigation/AdminSidebar";  // updated import
 
-const Layout = ({ children }) => {
+const AdminLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
     <div className="flex">
 
       {/* Sidebar */}
-      <Sidebar onToggle={setSidebarOpen} />
+      <AdminSidebar onToggle={setSidebarOpen} />
 
       {/* Main Content */}
       <main
@@ -24,4 +24,4 @@ const Layout = ({ children }) => {
   );
 };
 
-export default Layout;
+export default AdminLayout;
