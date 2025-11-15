@@ -1,18 +1,9 @@
 import React, { useState } from "react";
-import {
-  HomeIcon,
-  UserGroupIcon,
-  BookOpenIcon,
-  ClipboardDocumentCheckIcon,
-  CreditCardIcon,
-  ChartBarIcon,
-  ClipboardDocumentListIcon,
-  ArrowRightOnRectangleIcon,
-} from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
+import { Home, BookOpen, CalendarCheck, ClipboardList, LogOut } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
-const Sidebar = ({ onToggle }) => {
+export default function TeacherSidebar({ onToggle }) {
   const location = useLocation();
   const [open, setOpen] = useState(true);
   const { logout } = useAuth();
@@ -24,17 +15,10 @@ const Sidebar = ({ onToggle }) => {
   };
 
   const navItems = [
-    { name: "Dashboard", path: "/admin/dashboard", icon: <HomeIcon className="w-5 h-5" /> },
-    { name: "Students", path: "/admin/students", icon: <UserGroupIcon className="w-5 h-5" /> },
-    { name: "Courses", path: "/admin/courses", icon: <BookOpenIcon className="w-5 h-5" /> },
-    {
-      name: "Attendance",
-      path: "/admin/attendance",
-      icon: <ClipboardDocumentCheckIcon className="w-5 h-5" />,
-    },
-    { name: "Grades", path: "/admin/grades", icon: <ClipboardDocumentListIcon className="w-5 h-5" /> },
-    { name: "GPA Summary", path: "/admin/gpa-summary", icon: <ChartBarIcon className="w-5 h-5" /> },
-    { name: "Payments", path: "/admin/payments", icon: <CreditCardIcon className="w-5 h-5" /> },
+    { name: "Dashboard", path: "/teacher/dashboard", icon: <Home size={20} /> },
+    { name: "My Classes", path: "/teacher/classes", icon: <BookOpen size={20} /> },
+    { name: "Attendance", path: "/teacher/attendance", icon: <CalendarCheck size={20} /> },
+    { name: "Grade Entry", path: "/teacher/grades", icon: <ClipboardList size={20} /> },
   ];
 
   return (
@@ -43,10 +27,9 @@ const Sidebar = ({ onToggle }) => {
         fixed left-0 top-0 min-h-screen flex flex-col
         transition-all duration-300
         ${open ? "w-60" : "w-16"}
-        bg-blue-700 text-white
+        bg-purple-700 text-white
       `}
     >
-
       {/* Header */}
       <div
         className={`
@@ -55,7 +38,7 @@ const Sidebar = ({ onToggle }) => {
         `}
         onClick={toggleSidebar}
       >
-        {open && <span className="font-bold text-lg">SIS Menu</span>}
+        {open && <span className="font-bold text-lg">Teacher Panel</span>}
         <span className="text-xl">{open ? "«" : "»"}</span>
       </div>
 
@@ -70,8 +53,8 @@ const Sidebar = ({ onToggle }) => {
               to={item.path}
               className={`
                 flex items-center gap-3 px-4 py-3 transition
-                hover:bg-blue-600
-                ${active ? "bg-blue-900" : ""}
+                hover:bg-purple-600
+                ${active ? "bg-purple-900" : ""}
               `}
             >
               {item.icon}
@@ -90,16 +73,14 @@ const Sidebar = ({ onToggle }) => {
           w-full text-left mt-4
         `}
       >
-        <ArrowRightOnRectangleIcon className="w-5 h-5" />
+        <LogOut size={20} />
         <span className={`${open ? "block" : "hidden"}`}>Logout</span>
       </button>
 
       {/* Footer */}
       <div className="p-4 text-center text-xs opacity-70">
-        {open && "© 2025 Student Information System"}
+        {open && "© 2025 SIS"}
       </div>
     </div>
   );
-};
-
-export default Sidebar;
+}

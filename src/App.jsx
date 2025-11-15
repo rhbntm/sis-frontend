@@ -3,6 +3,7 @@ import ProtectedRoute from "./components/shared/ProtectedRoute";
 
 // layouts
 import AdminLayout from "./layouts/AdminLayout";
+import TeacherLayout from "./layouts/TeacherLayout";
 
 // admin pages
 import AdminDashboard from "./features/admin/dashboard/AdminDashboard";
@@ -13,9 +14,15 @@ import AdminStudents from "./features/admin/students/AdminStudents";
 // import AdminAttendance from "./features/admin/attendance/AdminAttendance";
 // import AdminGpaSummary from "./features/admin/gpa/AdminGpaSummary";
 
+// teacher pages
+import TeacherDashboard from "./features/teacher/dashboard/TeacherDashboard";
+
 // auth pages
 import LoginPage from "./pages/LoginPage";
 import Unauthorized from "./pages/Unauthorized";
+
+// shared
+import RootRedirect from "./components/shared/RootRedirect";
 
 function App() {
   return (
@@ -25,6 +32,8 @@ function App() {
         {/* Login */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/" element={<RootRedirect />} />
+
 
         {/* ADMIN ROUTES */}
         <Route
@@ -38,6 +47,19 @@ function App() {
           }
         />
 
+      {/* TEACHER ROUTES */}
+      <Route
+        path="/teacher/dashboard"
+        element={
+          <ProtectedRoute allowedRoles={['teacher']}>
+            <TeacherLayout>
+              <TeacherDashboard />
+            </TeacherLayout>
+          </ProtectedRoute>
+        }
+      />
+
+
         <Route
           path="/admin/students"
           element={
@@ -48,6 +70,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+      
 
         {/* Repeat for other modules */}
 
