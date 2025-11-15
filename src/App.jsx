@@ -1,29 +1,59 @@
-import { Routes, Route } from "react-router-dom";
-import Layout from "./components/Layout";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./components/shared/ProtectedRoute";
 
-// Pages
-import Dashboard from "./pages/Dashboard";
-import Students from "./pages/Students";
-import Courses from "./pages/Courses";
-import AttendancePage from "./pages/AttendancePage";
-import GradesPage from "./pages/GradesPage";
-import GpaSummaryPage from "./pages/GpaSummaryPage";
-import PaymentsPage from "./pages/PaymentsPage";
+// layouts
+import AdminLayout from "./layouts/AdminLayout";
 
-const App = () => {
+// admin pages
+import AdminDashboard from "./features/admin/dashboard/AdminDashboard";
+import AdminStudents from "./features/admin/students/AdminStudents";
+// import AdminCourses from "./features/admin/courses/AdminCourses";
+// import AdminPayments from "./features/admin/payments/AdminPayments";
+// import AdminGrades from "./features/admin/grades/AdminGrades";
+// import AdminAttendance from "./features/admin/attendance/AdminAttendance";
+// import AdminGpaSummary from "./features/admin/gpa/AdminGpaSummary";
+
+// auth pages
+import LoginPage from "./pages/LoginPage";
+import Unauthorized from "./pages/Unauthorized";
+
+function App() {
   return (
-    <Layout>
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/students" element={<Students />} />
-        <Route path="/courses" element={<Courses />} />
-        <Route path="/attendance" element={<AttendancePage />} />
-        <Route path="/grades" element={<GradesPage />} />
-        <Route path="/gpa-summary" element={<GpaSummaryPage />} />
-        <Route path="/payments" element={<PaymentsPage />} />
+
+        {/* Login */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+
+        {/* ADMIN ROUTES */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminLayout>
+                <AdminDashboard />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/students"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminLayout>
+                <AdminStudents />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Repeat for other modules */}
+
       </Routes>
-    </Layout>
+    </BrowserRouter>
   );
-};
+}
 
 export default App;

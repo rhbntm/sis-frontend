@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getStudents } from "../services/api";
+import { getStudents } from "../../../services/api";  // FIXED PATH
 
-export default function Students() {
+export default function AdminStudents() {       // UPDATED NAME
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -14,14 +14,11 @@ export default function Students() {
 
   return (
     <div className="p-6">
-      {/* Page Header */}
       <h1 className="text-3xl font-bold mb-6 text-blue-700">
         👨‍🎓 Student Records
       </h1>
 
-      {/* Container */}
       <div className="bg-white shadow-md rounded-lg p-6">
-        {/* Loading indicator */}
         {loading ? (
           <p className="text-gray-600">Loading students...</p>
         ) : students.length === 0 ? (
@@ -40,10 +37,7 @@ export default function Students() {
 
               <tbody>
                 {students.map((s, idx) => (
-                  <tr
-                    key={s.student_id}
-                    className="hover:bg-gray-50 transition"
-                  >
+                  <tr key={s.student_id} className="hover:bg-gray-50 transition">
                     <td className="p-2 border">{idx + 1}</td>
                     <td className="p-2 border">
                       {s.first_name} {s.last_name}

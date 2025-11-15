@@ -5,7 +5,7 @@ import {
   getDepartments,
   getAttendance,
   getPayments,
-} from "../services/api";
+} from "../../../services/api";  // FIXED PATH
 import axios from "axios";
 import {
   Users,
@@ -16,7 +16,7 @@ import {
   Quote,
 } from "lucide-react";
 
-export default function Dashboard() {
+export default function AdminDashboard() {   // UPDATED NAME
   const [quote, setQuote] = useState("Loading...");
   const [stats, setStats] = useState({
     students: 0,
@@ -31,7 +31,6 @@ export default function Dashboard() {
     fetchStats();
   }, []);
 
-  // Fetch quote using API Ninjas
   const fetchQuote = async () => {
     try {
       const res = await axios.get("https://api.api-ninjas.com/v1/quotes", {
@@ -43,7 +42,6 @@ export default function Dashboard() {
     }
   };
 
-  // Fetch summary counts
   const fetchStats = async () => {
     try {
       const [
@@ -72,13 +70,10 @@ export default function Dashboard() {
     }
   };
 
-  // Card builder component
   const StatCard = ({ icon: Icon, label, value, color }) => (
     <div className="p-5 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
       <div className="flex items-center gap-4">
-        <div
-          className={`p-3 rounded-lg bg-${color}-50 text-${color}-600`}
-        >
+        <div className={`p-3 rounded-lg bg-${color}-50 text-${color}-600`}>
           <Icon size={22} />
         </div>
         <div>
@@ -91,10 +86,8 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 space-y-8">
-      {/* Title */}
       <h1 className="text-3xl font-bold text-gray-800">Dashboard Overview</h1>
 
-      {/* Quote */}
       <div className="p-5 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-xl shadow-sm">
         <div className="flex items-start gap-3">
           <Quote className="text-blue-600" size={24} />
@@ -102,9 +95,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
         <StatCard
           icon={Users}
           label="Total Students"
