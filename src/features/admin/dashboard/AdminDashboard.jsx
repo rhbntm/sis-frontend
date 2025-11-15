@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 
-// ✅ Updated modular service imports
+// Modular service imports
 import { getStudents } from "../../../services/students";
 import { getCourses } from "../../../services/courses";
 import { getDepartments } from "../../../services/departments";
 import { getAttendance } from "../../../services/attendance";
 import { getPayments } from "../../../services/payments";
+import { getQuote } from "../../../services/quotes";
+import { getWeather } from "../../../services/weather";
 
-import axios from "axios";
 import {
   Users,
   BookOpen,
@@ -15,10 +16,13 @@ import {
   CalendarCheck,
   CreditCard,
   Quote,
+  CloudSun,
 } from "lucide-react";
 
 export default function AdminDashboard() {
   const [quote, setQuote] = useState("Loading...");
+  const [weather, setWeather] = useState(null);
+
   const [stats, setStats] = useState({
     students: 0,
     courses: 0,
@@ -29,22 +33,32 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchQuote();
+    fetchWeather();
     fetchStats();
   }, []);
 
+  // Fetching quote from backend API
   const fetchQuote = async () => {
     try {
-      const res = await axios.get("https://api.api-ninjas.com/v1/quotes", {
-        headers: {
-          "X-Api-Key": "N0dpxSF7n9ZzQWlKR7PTMw==89CmXknSEHwbmZrQ",
-        },
-      });
-      setQuote(res.data[0]?.quote || "Stay motivated and keep learning!");
-    } catch {
+      const data = await getQuote();
+      setQuote(data[0]?.quote || "Stay motivated and keep learning!");
+    } catch (err) {
+      console.error("Quote fetch error:", err);
       setQuote("Stay motivated and keep learning!");
     }
   };
 
+  // Fetch weather from backend API
+  const fetchWeather = async () => {
+    try {
+      const data = await getWeather("Manila");
+      setWeather(data.current_weather);
+    } catch (err) {
+      console.error("Weather fetch error:", err);
+    }
+  };
+
+  // Fetch dashboard stats
   const fetchStats = async () => {
     try {
       const [
@@ -91,12 +105,29 @@ export default function AdminDashboard() {
     <div className="p-6 space-y-8">
       <h1 className="text-3xl font-bold text-gray-800">Dashboard Overview</h1>
 
+      {/* Quotes API Widget */}
       <div className="p-5 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-xl shadow-sm">
         <div className="flex items-start gap-3">
           <Quote className="text-blue-600" size={24} />
           <p className="text-gray-700 italic text-lg">“{quote}”</p>
         </div>
       </div>
+
+      {/* Weather API Widget */}
+      {weather && (
+        <div className="p-5 bg-gradient-to-r from-yellow-50 to-yellow-100 border border-yellow-200 rounded-xl shadow-sm flex items-center gap-4">
+          <CloudSun className="text-yellow-600" size={28} />
+          <div>
+            <p className="text-gray-700 text-lg font-semibold">Manila Weather</p>
+            <p className="text-gray-600">
+              Temperature: <strong>{weather.temperature}°C</strong>
+            </p>
+            <p className="text-gray-600">
+              Windspeed: <strong>{weather.windspeed} km/h</strong>
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <StatCard
@@ -105,28 +136,24 @@ export default function AdminDashboard() {
           value={stats.students}
           color="blue"
         />
-
         <StatCard
           icon={BookOpen}
           label="Total Courses"
           value={stats.courses}
           color="green"
         />
-
         <StatCard
           icon={Building2}
           label="Departments"
           value={stats.departments}
           color="purple"
         />
-
         <StatCard
           icon={CalendarCheck}
           label="Attendance Records"
           value={stats.attendance}
           color="yellow"
         />
-
         <StatCard
           icon={CreditCard}
           label="Total Payments"
