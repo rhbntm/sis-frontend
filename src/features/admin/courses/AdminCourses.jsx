@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import {
-  getCourses,
-  addCourse,
-  deleteCourse,
-  getDepartments,
-} from "../services/api";
+
+// ✅ Updated service imports (modularized)
+import { getCourses, addCourse, deleteCourse } from "../../../services/courses";
+import { getDepartments } from "../../../services/departments";
 
 export default function Courses() {
   const [courses, setCourses] = useState([]);
@@ -180,9 +178,11 @@ export default function Courses() {
                   <td className="border px-4 py-2">{course.course_id}</td>
 
                   <td className="border px-4 py-2">
-                    {departments.find(
-                      (d) => d.department_id === course.department_id
-                    )?.name || "N/A"}
+                    {
+                      departments.find(
+                        (d) => d.department_id === course.department_id
+                      )?.name || "N/A"
+                    }
                   </td>
 
                   <td className="border px-4 py-2">{course.course_code}</td>

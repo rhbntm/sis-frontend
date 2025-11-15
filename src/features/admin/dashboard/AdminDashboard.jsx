@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import {
-  getStudents,
-  getCourses,
-  getDepartments,
-  getAttendance,
-  getPayments,
-} from "../../../services/api";  // FIXED PATH
+
+// ✅ Updated modular service imports
+import { getStudents } from "../../../services/students";
+import { getCourses } from "../../../services/courses";
+import { getDepartments } from "../../../services/departments";
+import { getAttendance } from "../../../services/attendance";
+import { getPayments } from "../../../services/payments";
+
 import axios from "axios";
 import {
   Users,
@@ -16,7 +17,7 @@ import {
   Quote,
 } from "lucide-react";
 
-export default function AdminDashboard() {   // UPDATED NAME
+export default function AdminDashboard() {
   const [quote, setQuote] = useState("Loading...");
   const [stats, setStats] = useState({
     students: 0,
@@ -34,7 +35,9 @@ export default function AdminDashboard() {   // UPDATED NAME
   const fetchQuote = async () => {
     try {
       const res = await axios.get("https://api.api-ninjas.com/v1/quotes", {
-        headers: { "X-Api-Key": "N0dpxSF7n9ZzQWlKR7PTMw==89CmXknSEHwbmZrQ" },
+        headers: {
+          "X-Api-Key": "N0dpxSF7n9ZzQWlKR7PTMw==89CmXknSEHwbmZrQ",
+        },
       });
       setQuote(res.data[0]?.quote || "Stay motivated and keep learning!");
     } catch {

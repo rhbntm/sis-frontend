@@ -16,6 +16,9 @@ import AdminStudents from "./features/admin/students/AdminStudents";
 
 // teacher pages
 import TeacherDashboard from "./features/teacher/dashboard/TeacherDashboard";
+import TeacherClasses from "./features/teacher/classes/TeacherClasses";
+import TeacherAttendance from "./features/teacher/attendance/TeacherAttendance";
+import TeacherGrades from "./features/teacher/grades/TeacherGrades";
 
 // auth pages
 import LoginPage from "./pages/LoginPage";
@@ -28,18 +31,16 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         {/* Login */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/" element={<RootRedirect />} />
 
-
         {/* ADMIN ROUTES */}
         <Route
           path="/admin/dashboard"
           element={
-            <ProtectedRoute allowedRoles={['admin']}>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <AdminLayout>
                 <AdminDashboard />
               </AdminLayout>
@@ -47,33 +48,63 @@ function App() {
           }
         />
 
-      {/* TEACHER ROUTES */}
-      <Route
-        path="/teacher/dashboard"
-        element={
-          <ProtectedRoute allowedRoles={['teacher']}>
-            <TeacherLayout>
-              <TeacherDashboard />
-            </TeacherLayout>
-          </ProtectedRoute>
-        }
-      />
+        {/* TEACHER ROUTES */}
+        <Route
+          path="/teacher/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <TeacherLayout>
+                <TeacherDashboard />
+              </TeacherLayout>
+            </ProtectedRoute>
+          }
+        />
 
+        <Route
+          path="/teacher/classes"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <TeacherLayout>
+                <TeacherClasses />
+              </TeacherLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/teacher/attendance"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <TeacherLayout>
+                <TeacherAttendance />
+              </TeacherLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/teacher/grades"
+          element={
+            <ProtectedRoute allowedRoles={["teacher"]}>
+              <TeacherLayout>
+                <TeacherGrades />
+              </TeacherLayout>
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/admin/students"
           element={
-            <ProtectedRoute allowedRoles={['admin']}>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <AdminLayout>
                 <AdminStudents />
               </AdminLayout>
             </ProtectedRoute>
           }
         />
-      
 
         {/* Repeat for other modules */}
-
       </Routes>
     </BrowserRouter>
   );

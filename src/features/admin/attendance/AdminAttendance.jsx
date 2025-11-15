@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  getAttendance,
-  addAttendance,
-  deleteAttendance,
-  getStudents,
-  getSections,
-} from "../services/api";
+
+// ✅ Updated modular service imports
+import { getAttendance, addAttendance, deleteAttendance } from "../../../services/attendance";
+import { getStudents } from "../../../services/students";
+import { getSections } from "../../../services/sections";
 
 export default function AttendancePage() {
   const [attendance, setAttendance] = useState([]);

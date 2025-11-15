@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getStudents } from "../../../services/api";  // FIXED PATH
+import { getStudents } from "../../../services/students";  // FIXED PATH
 
 export default function AdminStudents() {       // UPDATED NAME
   const [students, setStudents] = useState([]);

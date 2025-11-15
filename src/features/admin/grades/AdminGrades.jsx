@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
+
+// ✅ Updated modular service imports
 import {
   getGrades,
   addGrade,
   updateGrade,
   deleteGrade,
-  getStudents,
-  getCourses,
-} from "../services/api";
+} from "../../../services/grades";
+import { getStudents } from "../../../services/students";
+import { getCourses } from "../../../services/courses";
 
-export default function GradesPage() {
+export default function AdminGrades() {
   const [grades, setGrades] = useState([]);
   const [students, setStudents] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -241,11 +243,7 @@ export default function GradesPage() {
               grades.map((g) => (
                 <tr key={g.record_id} className="hover:bg-gray-50 transition">
                   <td className="border px-3 py-2">{g.record_id}</td>
-
-                  {/* Student */}
                   <td className="border px-3 py-2">{getStudentName(g.student_id)}</td>
-
-                  {/* Course */}
                   <td className="border px-3 py-2">{getCourseTitle(g.course_id)}</td>
 
                   {/* Grade */}

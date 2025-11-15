@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { getStudents, getGPA } from "../services/api";
+
+// ✅ Updated imports from modular services
+import { getStudents } from "../../../services/students";
+import { getGPA } from "../../../services/grades";
 
 export default function GpaSummaryPage() {
   const [students, setStudents] = useState([]);
@@ -43,7 +46,7 @@ export default function GpaSummaryPage() {
   };
 
   const getStudentInfo = () => {
-    return students.find(s => s.student_id == selected);
+    return students.find((s) => s.student_id == selected);
   };
 
   return (
@@ -78,9 +81,7 @@ export default function GpaSummaryPage() {
 
       {/* Error message */}
       {error && (
-        <div className="bg-red-100 text-red-700 p-3 rounded mb-6">
-          {error}
-        </div>
+        <div className="bg-red-100 text-red-700 p-3 rounded mb-6">{error}</div>
       )}
 
       {/* GPA Results */}
@@ -103,7 +104,7 @@ export default function GpaSummaryPage() {
             </span>
           </div>
 
-          {/* Optional course breakdown if returned by API */}
+          {/* Optional course breakdown */}
           {gpaData.courses?.length > 0 && (
             <div className="mt-4">
               <h3 className="font-semibold mb-2">Course Breakdown</h3>
