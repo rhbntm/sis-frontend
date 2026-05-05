@@ -4,6 +4,7 @@ This is for our school project. We were tasked to build a front-end and a back-e
 
 A React-based frontend for a Student Information System (SIS), built as a school project. Designed to pair with a separate **CodeIgniter 4 + PHP** REST API backend. Features role-based dashboards for administrators and teachers with modular API integration.
 
+![login](project-screenshots/login.png)
 
 ![admin dashboard](project-screenshots/image.png)
 
@@ -19,7 +20,7 @@ A React-based frontend for a Student Information System (SIS), built as a school
 
 ![payments](project-screenshots/image-6.png)
 
-![qr-api](image-7.png)
+![qr-api](project-screenshots/image-7.png)
 
 ## Tech Stack
 
